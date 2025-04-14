@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import networkx as nx
 from temporal_graph import EdgeEvent
+from tqdm import tqdm
 
 class Data_Utils:
     class Data_Load:
@@ -106,11 +107,11 @@ class Data_Utils:
                     pre_time=start_time
                     for edge_event in value[0]:
                         if edge_event.src==source_id:
-                            tree.add_node(edge_event.src+"_"+str(start_time))
-                            tree.add_node(edge_event.tar+"_"+str(edge_event.time))
+                            tree.add_node(edge_event.src+"_"+str(start_time),x_pos=0.0,y_pos=0.0)
+                            tree.add_node(edge_event.tar+"_"+str(edge_event.time),x_pos=0.0,y_pos=0.0)
                             tree.add_edge(edge_event.src+"_"+str(start_time),edge_event.tar+"_"+str(edge_event.time),time=edge_event.time)
                         else:
-                            tree.add_node(edge_event.tar+"_"+str(edge_event.time))
+                            tree.add_node(edge_event.tar+"_"+str(edge_event.time),x_pos=0.0,y_pos=0.0)
                             tree.add_edge(edge_event.src+"_"+str(pre_time),edge_event.tar+"_"+str(edge_event.time),time=edge_event.time)
                         pre_time=edge_event.time
             return tree
@@ -129,3 +130,12 @@ class Data_Utils:
                         time_set.add(edge_event.time)
             time_list=sorted(time_set)
             return graph,time_list
+
+        @staticmethod
+        def compute_time_axis_list(start_time:int,end_time:int,time_interval:int):
+            if end_time%time_interval==0:
+                time_axis_list=list(range(start_time,end_time+1,time_interval))
+            else:
+                time_axis_list=list(range(start_time,end_time+1,time_interval))
+                time_axis_list.append(end_time)
+            return time_axis_list 
