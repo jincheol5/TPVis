@@ -31,50 +31,50 @@
                 <div class="ui label">
                     Dataset
                 </div>
-                <input id="input_start_time" type="text" placeholder="dataset name">
+                <input id="dataset" type="text" placeholder="dataset name">
             </div>
 
             <div class="ui small labeled input">
                 <div class="ui label">
                     Source
                 </div>
-                <input id="input_start_time" type="text" placeholder="source id">
+                <input id="source_id" type="text" placeholder="source id">
             </div>
 
             <div class="ui small labeled input">
                 <div class="ui label">
                     Start
                 </div>
-                <input id="input_start_time" type="text" placeholder="unix timestamp">
+                <input id="start_time" type="text" placeholder="unix timestamp">
             </div>
 
             <div class="ui small labeled input">
-                <div id="label_end_time" class="ui label">
+                <div class="ui label">
                     End
                 </div>
-                <input id="input_end_time" type="text" placeholder="unix timestamp">
+                <input id="end_time" type="text" placeholder="unix timestamp">
             </div>
             
             <div class="ui small action input">
                 <select class="ui compact selection dropdown">
                     <option selected="" value="foremost_path">Foremost path</option>
-                    <option value="shortest_path">Foremost path</option>
+                    <!-- <option value="shortest_path">Foremost path</option> -->
                 </select>
-                <div id="button_visualize" class="ui button">Visualize</div>
+                <div id="visualize" class="ui button">Visualize</div>
             </div>
 
             <div class="ui icon input">
-                <input type="text" placeholder="target id">
+                <input id="highlight_target_id" type="text" placeholder="target id">
                 <i class="inverted circular search link icon"></i>
             </div>
 
             <div class="ui icon input">
-                <input type="text" placeholder="source id">
+                <input id="highlight_source_id" type="text" placeholder="source id">
                 <i class="inverted circular search link icon"></i>
             </div>
         </div>
         <div id="bottom_section">
-
+            <svg id="display"></svg>
         </div>
     </div>
 </body>

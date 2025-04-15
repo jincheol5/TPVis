@@ -1,6 +1,8 @@
 #background{
     width: 2000px;
     height: 1500px;
+
+    padding:20px;
 }
 
 #title_section{
@@ -24,6 +26,8 @@
     border-right: 1px solid #001933;
     border-left: 1px solid #001933;
     border-bottom: 1px solid #001933;
+
+    background-color: #001933;
 }
 
 #bottom_section{
@@ -35,3 +39,7 @@
     border-bottom: 1px solid #001933;
 }
 
+#display{
+    width: 2000px;
+    height: 1350px;
+}
