@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TPVis</title>
+
+    <!-- css file -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- D3.js 라이브러리 로드 -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- Semantic UI -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
+    <!-- data_load.js, main.js 파일 포함
+    <script src="api.js"></script>
+    <script src="data_apply.js"></script>
+    <script src="main.js"></script> -->
+</head>
+<body>
+    <div id="background">
+        <div id="title_section">
+            <h4 class="ui header" id="title">
+                <i class="search mini icon"></i>
+                TPVis
+            </h4>
+        </div>
+        <div id="top_section">
+            <div class="ui small labeled input">
+                <div class="ui label">
+                    Dataset
+                </div>
+                <input id="input_start_time" type="text" placeholder="dataset name">
+            </div>
+
+            <div class="ui small labeled input">
+                <div class="ui label">
+                    Source
+                </div>
+                <input id="input_start_time" type="text" placeholder="source id">
+            </div>
+
+            <div class="ui small labeled input">
+                <div class="ui label">
+                    Start
+                </div>
+                <input id="input_start_time" type="text" placeholder="unix timestamp">
+            </div>
+
+            <div class="ui small labeled input">
+                <div id="label_end_time" class="ui label">
+                    End
+                </div>
+                <input id="input_end_time" type="text" placeholder="unix timestamp">
+            </div>
+            
+            <div class="ui small action input">
+                <select class="ui compact selection dropdown">
+                    <option selected="" value="foremost_path">Foremost path</option>
+                    <option value="shortest_path">Foremost path</option>
+                </select>
+                <div id="button_visualize" class="ui button">Visualize</div>
+            </div>
+
+            <div class="ui icon input">
+                <input type="text" placeholder="target id">
+                <i class="inverted circular search link icon"></i>
+            </div>
+
+            <div class="ui icon input">
+                <input type="text" placeholder="source id">
+                <i class="inverted circular search link icon"></i>
+            </div>
+        </div>
+        <div id="bottom_section">
+
+        </div>
+    </div>
+</body>
+</html>

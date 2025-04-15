@@ -1,0 +1,37 @@
+#background{
+    width: 2000px;
+    height: 1500px;
+}
+
+#title_section{
+    width: 2000px;
+    height: 30px;
+    display: flex;
+    border: 1px solid #001933;
+}
+
+#top_section{
+    width: 2000px;
+    height: 120px;
+
+    display: flex;
+    justify-content: space-between; /* 각 요소들 사이에 동일한 간격 분배 */
+    align-items: center;            /* 요소들을 수직 중앙 정렬 */
+    flex-wrap: wrap;                /* 화면 크기에 따라 줄바꿈 허용 */
+    gap: 10px;                      /* 요소 간 추가 여백 */
+    padding: 0 20px;                /* 컨테이너 좌우에 20px 여백 추가 */
+
+    border-right: 1px solid #001933;
+    border-left: 1px solid #001933;
+    border-bottom: 1px solid #001933;
+}
+
+#bottom_section{
+    width: 2000px;
+    height: 1350px;
+
+    border-right: 1px solid #001933;
+    border-left: 1px solid #001933;
+    border-bottom: 1px solid #001933;
+}
+
