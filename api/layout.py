@@ -52,26 +52,28 @@ class Layout:
                 key-=1
             base_layout_graph.add_node(edge_event.src+"_"+str(time_axis_list[key]),x_pos=axis_x_pos_dict[time_axis_list[key]],y_pos=vertical_y_pos_dic[edge_event.src],vertex_id=edge_event.src,time=time_axis_list[key])
             base_layout_graph.add_node(edge_event.tar+"_"+str(time_axis_list[key+1]),x_pos=axis_x_pos_dict[time_axis_list[key+1]],y_pos=vertical_y_pos_dic[edge_event.tar],vertex_id=edge_event.tar,time=time_axis_list[key+1])
-            base_layout_graph.add_edge(edge_event.src+"_"+str(time_axis_list[key]),edge_event.tar+"_"+str(time_axis_list[key+1]),time=edge_event.time)
+            base_layout_graph.add_edge(edge_event.src+"_"+str(time_axis_list[key]),edge_event.tar+"_"+str(time_axis_list[key+1]),time=time_axis_list[key+1],pre_time=time_axis_list[key])
         
         return base_layout_graph,time_axis_list
 
     def convert_vertex_event_to_json(self,vertex_id:str,time:int,x_pos:float,y_pos:float):
         event_dic={}
-        event_dic['vertex_id']=vertex_id
-        event_dic['time']=time
-        event_dic['x_pos']=x_pos
-        event_dic['y_pos']=y_pos
-        event_dic['highlight']=False
+        event_dic["id"]=vertex_id+"_"+str(time)
+        event_dic["vertex_id"]=vertex_id
+        event_dic["time"]=time
+        event_dic["x_pos"]=x_pos
+        event_dic["y_pos"]=y_pos
+        event_dic["highlight"]=False
 
         return event_dic
     
-    def convert_edge_event_to_json(self,source_id:str,target_id:str,time:int):
+    def convert_edge_event_to_json(self,source_id:str,target_id:str,time:int,pre_time:int):
         event_dic={}
-        event_dic['source_id']=source_id
-        event_dic['target_id']=target_id
-        event_dic['time']=time
-        event_dic['highlight']=False
+        event_dic["id"]=source_id+"_"+target_id+"_"+str(time)
+        event_dic["source_vertex_event_id"]=source_id+"_"+str(pre_time)
+        event_dic["target_vertex_event_id"]=target_id+"_"+str(time)
+        event_dic["time"]=time
+        event_dic["highlight"]=False
 
         return event_dic
 
@@ -87,7 +89,7 @@ class Layout:
             vertex_event_list.append(self.convert_vertex_event_to_json(vertex_id=node,time=attr.get("time"),x_pos=attr.get("x_pos"),y_pos=attr.get("y_pos")))
         
         for u,v,attr in layout_graph.edges(data=True):
-            edge_event_list.append(self.convert_edge_event_to_json(source_id=u,target_id=v,time=attr.get("time")))
+            edge_event_list.append(self.convert_edge_event_to_json(source_id=u,target_id=v,time=attr.get("time"),pre_time=attr.get("pre_time")))
 
         response_dict={}
         response_dict["time_axis_list"]=time_axis_list

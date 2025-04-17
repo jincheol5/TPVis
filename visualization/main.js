@@ -1,5 +1,5 @@
-import {request_simple_test,request_layout} from './api.js';
-import {visualize_simple_test,visualize_base_layout} from './visualize.js';
+import {request_layout} from './api.js';
+import {visualize_base_layout} from './visualize.js';
 
 document.addEventListener("DOMContentLoaded",function(){
     // 페이지가 완전히 로드된 후 실행되는 함수
