@@ -28,7 +28,7 @@
                 <div class="ui label">
                     Dataset
                 </div>
-                <input id="dataset" type="text" placeholder="dataset name">
+                <input id="dataset_name" type="text" placeholder="dataset name">
             </div>
 
             <div class="ui small labeled input">
@@ -53,8 +53,9 @@
             </div>
             
             <div class="ui small action input">
+                <input id="time_interval" type="int" placeholder="time interval">
                 <select class="ui compact selection dropdown">
-                    <option selected="" value="foremost_path">Foremost path</option>
+                    <option selected="" value="base">Base</option>
                     <!-- <option value="shortest_path">Foremost path</option> -->
                 </select>
                 <div id="visualize" class="ui button">Visualize</div>
@@ -75,7 +76,7 @@
         </div>
     </div>
 
-    <!-- data_load.js, main.js 파일 포함 -->
-    <script src="main.js"></script>
+    <!-- main.js 파일 포함 -->
+    <script type="module" src="main.js"></script>
 </body>
 </html>

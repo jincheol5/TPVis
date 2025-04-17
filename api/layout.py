@@ -6,13 +6,13 @@ class Layout:
     def __init__(self,config):
         """
         config:
-            -display_width: float
-            -display_height: float
             -dataset_name: str
             -source_id: str
             -start_time: int
             -end_time: int
             -time_interval: int
+            -layout_width: float
+            -layout_height: float
         """
         self.config=config
         self.df=Data_Utils.Data_Load.get_dataset_df(dataset_name=self.config["dataset_name"])
@@ -29,7 +29,7 @@ class Layout:
         compute y position dict
         """
         node_dfs_preorder=list(nx.dfs_preorder_nodes(self.static_graph,source=self.config["source_id"]))
-        axis_y_pos_gap=self.config["display_height"]/(len(node_dfs_preorder)-1)
+        axis_y_pos_gap=self.config["layout_height"]/(len(node_dfs_preorder)-1)
         vertical_y_pos_dic={}
         for idx,node in enumerate(node_dfs_preorder):
             vertical_y_pos_dic[node]=idx*axis_y_pos_gap
@@ -38,7 +38,7 @@ class Layout:
         compute x position dict
         """
         time_axis_list=Data_Utils.Data_Process.compute_time_axis_list(start_time=self.config["start_time"],end_time=self.config["end_time"],time_interval=self.config["time_interval"])
-        axis_x_pos_gap=self.config["display_width"]/(len(time_axis_list)-1)
+        axis_x_pos_gap=self.config["layout_width"]/(len(time_axis_list)-1)
         axis_x_pos_dict={}
         for idx,time_axis in enumerate(time_axis_list):
             axis_x_pos_dict[time_axis]=idx*axis_x_pos_gap
@@ -56,7 +56,7 @@ class Layout:
         
         return base_layout_graph,time_axis_list
 
-    def convert_vertex_event_json(self,vertex_id:str,time:int,x_pos:float,y_pos:float):
+    def convert_vertex_event_to_json(self,vertex_id:str,time:int,x_pos:float,y_pos:float):
         event_dic={}
         event_dic['vertex_id']=vertex_id
         event_dic['time']=time
@@ -66,7 +66,7 @@ class Layout:
 
         return event_dic
     
-    def convert_edge_event_json(self,source_id:str,target_id:str,time:int):
+    def convert_edge_event_to_json(self,source_id:str,target_id:str,time:int):
         event_dic={}
         event_dic['source_id']=source_id
         event_dic['target_id']=target_id
@@ -75,7 +75,7 @@ class Layout:
 
         return event_dic
 
-    def compute_layout_json_string(self,layout_type="base"):
+    def compute_layout_to_response_dict(self,layout_type="base"):
         match layout_type:
             case "base":
                 layout_graph,time_axis_list=self.compute_base_layout()
@@ -84,10 +84,10 @@ class Layout:
         edge_event_list=[]
 
         for node,attr in layout_graph.nodes(data=True):
-            vertex_event_list.append(self.convert_vertex_event_json(vertex_id=node,time=attr.get("time"),x_pos=attr.get("x_pos"),y_pos=attr.get("y_pos")))
+            vertex_event_list.append(self.convert_vertex_event_to_json(vertex_id=node,time=attr.get("time"),x_pos=attr.get("x_pos"),y_pos=attr.get("y_pos")))
         
         for u,v,attr in layout_graph.edges(data=True):
-            edge_event_list.append(self.convert_edge_event_json(source_id=u,target_id=v,time=attr.get("time")))
+            edge_event_list.append(self.convert_edge_event_to_json(source_id=u,target_id=v,time=attr.get("time")))
 
         response_dict={}
         response_dict["time_axis_list"]=time_axis_list
