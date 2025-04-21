@@ -54,7 +54,7 @@ class Layout:
             base_layout_graph.add_node(edge_event.tar+"_"+str(time_axis_list[key+1]),x_pos=axis_x_pos_dict[time_axis_list[key+1]],y_pos=vertical_y_pos_dic[edge_event.tar],vertex_id=edge_event.tar,time=time_axis_list[key+1])
             base_layout_graph.add_edge(edge_event.src+"_"+str(time_axis_list[key]),edge_event.tar+"_"+str(time_axis_list[key+1]),time=time_axis_list[key+1],pre_time=time_axis_list[key])
         
-        return base_layout_graph,time_axis_list
+        return base_layout_graph,time_axis_list 
 
     def convert_vertex_event_to_json(self,vertex_id:str,time:int,x_pos:float,y_pos:float):
         event_dic={}
