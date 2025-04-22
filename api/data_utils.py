@@ -55,7 +55,7 @@ class Data_Utils:
 
         @staticmethod
         def get_networkx_graph_from_df(start_time:int,end_time:int,df:pd.DataFrame):
-            df=df[(df['time']>=start_time)&(df['time']<=end_time)]
+            df=df[(df['time']>start_time)&(df['time']<=end_time)]
             graph=nx.DiGraph()
             for row in df.itertuples():
                 graph.add_node(row.src)
