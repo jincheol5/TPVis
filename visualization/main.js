@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded",function(){
     // 1. Visualize 버튼 클릭 시
     const visualize_button=document.getElementById("visualize");
     visualize_button.addEventListener("click",function(){
+
+        const svg=d3.select("#display");
+        svg.selectAll("*").remove();  // 이전 시각화 지우기
+
         // 입력값들을 읽어오기
         const dataset_name=document.getElementById("dataset_name").value;
         const source_id=document.getElementById("source_id").value;
@@ -29,14 +33,6 @@ document.addEventListener("DOMContentLoaded",function(){
             layout_width: 1800.0,
             layout_height: 1100.0
         };
-
-        // request_simple_test(request_json)
-        // .then(response_json=>{
-        //     visualize_simple_test(response_json);
-        // })
-        // .catch(error => {
-        //     console.error("API 요청 또는 시각화 실패:", error);
-        // });
 
         request_layout(request_json)
         .then(response_json=>{

@@ -11,7 +11,7 @@ class Data_Utils:
         def get_dataset_df(dataset_name="CollegeMsg"):
             file_name=dataset_name+".txt"
             file_path=os.path.join(Data_Utils.Data_Load.file_path,file_name)
-            df=pd.read_csv(file_path,sep=" ",header=None,names=["src","tar","time"],dtype={"time":int})
+            df=pd.read_csv(file_path,sep=" ",header=None,names=["src","tar","time"],dtype={"src":str,"tar":str,"time":int})
             return df
         
         @staticmethod
@@ -46,7 +46,7 @@ class Data_Utils:
     
         @staticmethod
         def get_edge_event_list_from_df(start_time:int,end_time:int,df:pd.DataFrame):
-            df=df[(df['time']>=start_time)&(df['time']<=end_time)]
+            df=df[(df['time']>start_time)&(df['time']<=end_time)]
             edge_event_list=[]
             for row in df.itertuples():
                 edge_event_list.append(EdgeEvent(src=row.src,tar=row.tar,time=int(row.time)))
@@ -77,9 +77,6 @@ class Data_Utils:
             initialize gamma table, FP_edge_event_list
             """
             gamma_dict={}
-            gamma_dict["source_id"]=source_id
-            gamma_dict["start_time"]=start_time
-            gamma_dict["end_time"]=end_time
             for node in graph.nodes:
                 gamma_dict[node]=([],-1) # (edge_event_list,visited_time) tuple
             
@@ -88,8 +85,8 @@ class Data_Utils:
             """
             compute foremost path using extended time-centric algorithm
             """
-            gamma_dict[source_id]=([],start_time)
-            for edge_event in edge_event_list:
+            gamma_dict[source_id]=([],0)
+            for edge_event in tqdm(edge_event_list,desc=f"compute FP..."):
                 if gamma_dict[edge_event.src][1]!=-1 and gamma_dict[edge_event.tar][1]==-1:
                     if gamma_dict[edge_event.src][1]<edge_event.time:
                         FP=gamma_dict[edge_event.src][0]+[edge_event]
@@ -98,42 +95,21 @@ class Data_Utils:
             return gamma_dict,FP_edge_event_list
         
         @staticmethod
-        def convert_gamma_to_tree(gamma_dict):
-            tree=nx.DiGraph()
-            source_id=gamma_dict["source_id"]
-            start_time=gamma_dict["start_time"]
-            for key,value in gamma_dict.items():
-                if isinstance(value,tuple):
-                    pre_time=start_time
-                    for edge_event in value[0]:
-                        if edge_event.src==source_id:
-                            tree.add_node(edge_event.src+"_"+str(start_time),x_pos=0.0,y_pos=0.0)
-                            tree.add_node(edge_event.tar+"_"+str(edge_event.time),x_pos=0.0,y_pos=0.0)
-                            tree.add_edge(edge_event.src+"_"+str(start_time),edge_event.tar+"_"+str(edge_event.time),time=edge_event.time)
-                        else:
-                            tree.add_node(edge_event.tar+"_"+str(edge_event.time),x_pos=0.0,y_pos=0.0)
-                            tree.add_edge(edge_event.src+"_"+str(pre_time),edge_event.tar+"_"+str(edge_event.time),time=edge_event.time)
-                        pre_time=edge_event.time
-            return tree
-
-        @staticmethod
         def convert_gamma_to_static_graph_and_time_list(gamma_dict):
             graph=nx.DiGraph()
             time_set=set()
-            source_id=gamma_dict["source_id"]
             for key,value in gamma_dict.items():
-                if isinstance(value,tuple):
-                    for edge_event in value[0]:
-                        graph.add_node(edge_event.src)
-                        graph.add_node(edge_event.tar)
-                        graph.add_edge(edge_event.src,edge_event.tar)
-                        time_set.add(edge_event.time)
+                for edge_event in value[0]:
+                    graph.add_node(edge_event.src)
+                    graph.add_node(edge_event.tar)
+                    graph.add_edge(edge_event.src,edge_event.tar)
+                    time_set.add(edge_event.time)
             time_list=sorted(time_set)
             return graph,time_list
 
         @staticmethod
         def compute_time_axis_list(start_time:int,end_time:int,time_interval:int):
-            if end_time%time_interval==0:
+            if (end_time-start_time)%time_interval==0:
                 time_axis_list=list(range(start_time,end_time+1,time_interval))
             else:
                 time_axis_list=list(range(start_time,end_time+1,time_interval))
