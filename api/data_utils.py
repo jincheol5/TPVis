@@ -33,6 +33,13 @@ class Data_Utils:
         @staticmethod
         def get_min_max_time_of_df(df:pd.DataFrame):
             return df["time"].min(),df["time"].max()
+        
+        @staticmethod
+        def get_min_max_time_of_FP_tree(FP_edge_event_list):
+            time_set=set()
+            for edge_event in FP_edge_event_list:
+                time_set.add(edge_event.time)
+            return min(time_set),max(time_set)
 
     class Data_Process:
         @staticmethod
@@ -95,9 +102,10 @@ class Data_Utils:
             return gamma_dict,FP_edge_event_list
         
         @staticmethod
-        def convert_gamma_to_static_graph_and_time_list(gamma_dict):
+        def convert_gamma_to_static_graph_and_time_list(gamma_dict,start_time:int):
             graph=nx.DiGraph()
             time_set=set()
+            time_set.add(start_time)
             for key,value in gamma_dict.items():
                 for edge_event in value[0]:
                     graph.add_node(edge_event.src)
@@ -109,9 +117,6 @@ class Data_Utils:
 
         @staticmethod
         def compute_time_axis_list(start_time:int,end_time:int,time_interval:int):
-            if (end_time-start_time)%time_interval==0:
-                time_axis_list=list(range(start_time,end_time+1,time_interval))
-            else:
-                time_axis_list=list(range(start_time,end_time+1,time_interval))
-                time_axis_list.append(end_time)
+            time_axis_list=list(range(start_time,end_time,time_interval))
+            time_axis_list.append(end_time)
             return time_axis_list 

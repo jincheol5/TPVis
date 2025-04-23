@@ -18,8 +18,8 @@ class Layout:
         self.config=config
         self.df=Data_Utils.Data_Load.get_dataset_df(dataset_name=self.config["dataset_name"])
         self.gamma_dict,self.FP_edge_event_list=Data_Utils.Data_Process.compute_single_source_FP(source_id=self.config["source_id"],start_time=self.config["start_time"],end_time=self.config["end_time"],df=self.df)
-        self.static_graph,self.time_list=Data_Utils.Data_Process.convert_gamma_to_static_graph_and_time_list(gamma_dict=self.gamma_dict)
-        self.min_time,self.max_time=Data_Utils.Data_Analysis.get_min_max_time_of_df(df=self.df)
+        self.static_graph,self.time_list=Data_Utils.Data_Process.convert_gamma_to_static_graph_and_time_list(gamma_dict=self.gamma_dict,start_time=self.config["start_time"])
+        self.min_time,self.max_time=Data_Utils.Data_Analysis.get_min_max_time_of_FP_tree(FP_edge_event_list=self.FP_edge_event_list)
 
     def compute_base_layout(self):
         """
@@ -108,8 +108,8 @@ class Layout:
                 else:
                     tree.add_node(edge_event.tar+"_"+str(tau+delta),vertex_id=edge_event.tar,time=tau+delta)
                     tree.add_edge(pre_id+"_"+str(tau),edge_event.tar+"_"+str(tau+delta),time=tau+delta,pre_time=tau)
-                    pre_id=edge_event.tar
-                    tau=tau+delta
+                pre_id=edge_event.tar
+                tau=tau+delta
 
         """
         compute Reingold-Tilford layout using igraph
@@ -147,19 +147,11 @@ class Layout:
             time=tree.nodes[node]["time"]
             tree.nodes[node]["x_pos"]=axis_x_pos_dict[time]
             tree.nodes[node]["y_pos"]=tree_pos[node][1]
+        tree.nodes[self.config["source_id"]+"_"+str(self.config["start_time"])]["y_pos"]=self.config["layout_height"]/2
         
         return tree,time_axis_list
 
     def compute_TPVis_layout(self):
-
-        # for key,value in self.gamma_dict.items():
-        #     print(f"last time: {value[1]} to {key}: ",end="")
-        #     for edge_event in value[0]:
-        #         print(f"{edge_event.tar}|{edge_event.time} ",end="")
-        #     print()
-
-        # for edge_event in self.FP_edge_event_list:
-        #     print(f"{edge_event.src} {edge_event.tar} {edge_event.time}")
         """
         initialize tree
         """
@@ -212,6 +204,7 @@ class Layout:
             time=tree.nodes[node]["time"]
             tree.nodes[node]["x_pos"]=axis_x_pos_dict[time]
             tree.nodes[node]["y_pos"]=tree_pos[node][1]
+        tree.nodes[self.config["source_id"]+"_"+str(self.config["start_time"])]["y_pos"]=self.config["layout_height"]/2
 
         return tree,self.time_list
 
@@ -249,10 +242,10 @@ class Layout:
         edge_event_list=[]
 
         for node,attr in layout_graph.nodes(data=True):
-            vertex_event_list.append(self.convert_vertex_event_to_json(vertex_id=node,time=attr.get("time"),x_pos=attr.get("x_pos"),y_pos=attr.get("y_pos")))
+            vertex_event_list.append(self.convert_vertex_event_to_json(vertex_id=attr.get("vertex_id"),time=attr.get("time"),x_pos=attr.get("x_pos"),y_pos=attr.get("y_pos")))
         
         for u,v,attr in layout_graph.edges(data=True):
-            edge_event_list.append(self.convert_edge_event_to_json(source_id=u,target_id=v,time=attr.get("time"),pre_time=attr.get("pre_time")))
+            edge_event_list.append(self.convert_edge_event_to_json(source_id=layout_graph.nodes[u]["vertex_id"],target_id=layout_graph.nodes[v]["vertex_id"],time=attr.get("time"),pre_time=attr.get("pre_time")))
 
         response_dict={}
         response_dict["time_axis_list"]=time_axis_list
