@@ -56,20 +56,20 @@
                 <input id="time_interval" type="int" placeholder="time interval">
                 <select class="ui compact selection dropdown">
                     <option selected="" value="base">Base</option>
-                    <option value="aggregated">Aggregated</option>
+                    <option value="tpvis_aggr">TPVis_Aggr</option>
                     <option value="tpvis">TPVis</option>
                 </select>
-                <div id="visualize" class="ui button">Visualize</div>
+                <div id="visualize_button" class="ui button">Visualize</div>
             </div>
 
             <div class="ui icon input">
-                <input id="highlight_target_id" type="text" placeholder="target id">
-                <i class="inverted circular search link icon"></i>
+                <input id="backward_id" type="text" placeholder="target id">
+                <i class="inverted circular search link icon" id="backward_button"></i>
             </div>
 
             <div class="ui icon input">
-                <input id="highlight_source_id" type="text" placeholder="source id">
-                <i class="inverted circular search link icon"></i>
+                <input id="forward_id" type="text" placeholder="source id">
+                <i class="inverted circular search link icon" id="forward_button"></i>
             </div>
         </div>
         <div id="bottom_section">

@@ -12,8 +12,11 @@ class Layout:
             -start_time: int
             -end_time: int
             -time_interval: int
+            -layout_type: str
             -layout_width: float
             -layout_height: float
+            -backward_id: str, default=None
+            -forward_id: str, default=None
         """
         self.config=config
         self.df=Data_Utils.Data_Load.get_dataset_df(dataset_name=self.config["dataset_name"])
@@ -39,7 +42,10 @@ class Layout:
         """
         compute x position dict
         """
-        time_axis_list=Data_Utils.Data_Process.compute_time_axis_list(start_time=self.config["start_time"],end_time=self.config["end_time"],time_interval=self.config["time_interval"])
+        if self.max_time<self.config["end_time"]:
+            time_axis_list=Data_Utils.Data_Process.compute_time_axis_list(start_time=self.config["start_time"],end_time=self.max_time,time_interval=self.config["time_interval"])
+        else:
+            time_axis_list=Data_Utils.Data_Process.compute_time_axis_list(start_time=self.config["start_time"],end_time=self.config["end_time"],time_interval=self.config["time_interval"])
         axis_x_pos_gap=self.config["layout_width"]/(len(time_axis_list)-1)
         axis_x_pos_dict={}
         for idx,time_axis in enumerate(time_axis_list):
@@ -49,7 +55,7 @@ class Layout:
         load to graph
         """
         delta=self.config["time_interval"]
-        for value in self.gamma_dict.values():
+        for key,value in self.gamma_dict.items():
             FP_edge_event_list=value[0]
             tau=self.config["start_time"]
             for idx in range(len(FP_edge_event_list)):
@@ -78,7 +84,7 @@ class Layout:
 
         return graph,time_axis_list 
 
-    def compute_aggregated_TPVis_layout(self):
+    def compute_TPVis_aggregated_layout(self):
         """
         initialize tree
         """
@@ -87,7 +93,7 @@ class Layout:
         """
         aggregate algorithm
         """
-        for value in self.gamma_dict.values():
+        for key,value in self.gamma_dict.items():
             FP_edge_event_list=value[0]
             tau=self.config["start_time"]
             pre_id=self.config["source_id"]
@@ -134,7 +140,10 @@ class Layout:
         """
         compute x position dict
         """
-        time_axis_list=Data_Utils.Data_Process.compute_time_axis_list(start_time=self.config["start_time"],end_time=self.config["end_time"],time_interval=self.config["time_interval"])
+        if self.max_time<self.config["end_time"]:
+            time_axis_list=Data_Utils.Data_Process.compute_time_axis_list(start_time=self.config["start_time"],end_time=self.max_time,time_interval=self.config["time_interval"])
+        else:
+            time_axis_list=Data_Utils.Data_Process.compute_time_axis_list(start_time=self.config["start_time"],end_time=self.config["end_time"],time_interval=self.config["time_interval"])
         axis_x_pos_gap=self.config["layout_width"]/(len(time_axis_list)-1)
         axis_x_pos_dict={}
         for idx,time_axis in enumerate(time_axis_list):
@@ -161,7 +170,7 @@ class Layout:
         convert to tree
         """
         tree.add_node(self.config["source_id"]+"_"+str(self.config["start_time"]),vertex_id=self.config["source_id"],time=self.config["start_time"])
-        for value in self.gamma_dict.values():
+        for key,value in self.gamma_dict.items():
             FP_edge_event_list=value[0]
             pre_time=self.config["start_time"]
             for edge_event in FP_edge_event_list:
@@ -208,24 +217,63 @@ class Layout:
 
         return tree,self.time_list
 
-    def convert_vertex_event_to_json(self,vertex_id:str,time:int,x_pos:float,y_pos:float):
+    def update_backward_event(self,graph):
+        """
+        udpate backward attr of vertex, edge event in graph
+        """
+        match self.config["layout_type"]:
+            case "tpvis":
+                for key,value in self.gamma_dict.items():
+                    FP_edge_event_list=value[0]
+                    pre_time=self.config["start_time"]
+                    for idx in range(len(FP_edge_event_list)):
+                        edge_event=FP_edge_event_list[idx]
+                        if key==self.config["backward_id"]:
+                            graph.nodes[edge_event.src+"_"+str(pre_time)]["backward"]=True
+                            graph.nodes[edge_event.tar+"_"+str(edge_event.time)]["backward"]=True
+                            graph.edges[(edge_event.src+"_"+str(pre_time),edge_event.tar+"_"+str(edge_event.time))]["backward"]=True
+                        pre_time=edge_event.time
+        return graph
+
+    def update_forward_event(self,graph):
+        """
+        update forward attr of vertex, edge event in graph
+        only TPVis layout
+        """
+        for key,value in self.gamma_dict.items():
+            FP_edge_event_list=value[0]
+            forward=False
+            pre_time=self.config["start_time"]
+            for idx in range(len(FP_edge_event_list)):
+                edge_event=FP_edge_event_list[idx]
+                if edge_event.src==self.config["forward_id"]:
+                    forward=True
+                graph.nodes[edge_event.src+"_"+str(pre_time)]["forward"]=forward
+                graph.nodes[edge_event.tar+"_"+str(edge_event.time)]["forward"]=forward
+                graph.edges[(edge_event.src+"_"+str(pre_time),edge_event.tar+"_"+str(edge_event.time))]["forward"]=forward
+                pre_time=edge_event.time
+        return graph
+
+    def convert_vertex_event_to_json(self,vertex_id:str,time:int,x_pos:float,y_pos:float,backward:bool=None,forward:bool=None):
         event_dic={}
         event_dic["id"]=vertex_id+"_"+str(time)
         event_dic["vertex_id"]=vertex_id
         event_dic["time"]=time
         event_dic["x_pos"]=x_pos
         event_dic["y_pos"]=y_pos
-        event_dic["highlight"]=False
+        event_dic["backward"]=backward
+        event_dic["forward"]=forward
 
         return event_dic
     
-    def convert_edge_event_to_json(self,source_id:str,target_id:str,time:int,pre_time:int):
+    def convert_edge_event_to_json(self,source_id:str,target_id:str,time:int,pre_time:int,backward:bool=None,forward:bool=None):
         event_dic={}
         event_dic["id"]=source_id+"_"+target_id+"_"+str(time)
         event_dic["source_vertex_event_id"]=source_id+"_"+str(pre_time)
         event_dic["target_vertex_event_id"]=target_id+"_"+str(time)
         event_dic["time"]=time
-        event_dic["highlight"]=False
+        event_dic["backward"]=backward
+        event_dic["forward"]=forward
 
         return event_dic
 
@@ -233,24 +281,26 @@ class Layout:
         match layout_type:
             case "base":
                 layout_graph,time_axis_list=self.compute_base_layout()
-            case "aggregated":
-                layout_graph,time_axis_list=self.compute_aggregated_TPVis_layout()
+            case "tpvis_aggr":
+                layout_graph,time_axis_list=self.compute_TPVis_aggregated_layout()
             case "tpvis":
                 layout_graph,time_axis_list=self.compute_TPVis_layout()
-        
+                layout_graph=self.update_forward_event(graph=layout_graph)
+        layout_graph=self.update_backward_event(graph=layout_graph)
+
         vertex_event_list=[]
         edge_event_list=[]
 
         for node,attr in layout_graph.nodes(data=True):
-            vertex_event_list.append(self.convert_vertex_event_to_json(vertex_id=attr.get("vertex_id"),time=attr.get("time"),x_pos=attr.get("x_pos"),y_pos=attr.get("y_pos")))
+            vertex_event_list.append(self.convert_vertex_event_to_json(vertex_id=attr.get("vertex_id"),time=attr.get("time"),x_pos=attr.get("x_pos"),y_pos=attr.get("y_pos"),backward=attr.get("backward"),forward=attr.get("forward")))
         
         for u,v,attr in layout_graph.edges(data=True):
-            edge_event_list.append(self.convert_edge_event_to_json(source_id=layout_graph.nodes[u]["vertex_id"],target_id=layout_graph.nodes[v]["vertex_id"],time=attr.get("time"),pre_time=attr.get("pre_time")))
+            edge_event_list.append(self.convert_edge_event_to_json(source_id=layout_graph.nodes[u]["vertex_id"],target_id=layout_graph.nodes[v]["vertex_id"],time=attr.get("time"),pre_time=attr.get("pre_time"),backward=attr.get("backward"),forward=attr.get("forward")))
 
         response_dict={}
         response_dict["time_axis_list"]=time_axis_list
         response_dict["vertex_event_list"]=vertex_event_list
         response_dict["edge_event_list"]=edge_event_list
+        response_dict["layout_type"]=self.config["layout_type"]
 
         return response_dict
-        
