@@ -2,6 +2,7 @@ import json
 import networkx as nx
 import igraph as ig
 from data_utils import Data_Utils
+from temporal_graph import EdgeEvent
 
 class Layout:
     def __init__(self,config):
@@ -177,7 +178,7 @@ class Layout:
                 tree.add_node(edge_event.tar+"_"+str(edge_event.time),vertex_id=edge_event.tar,time=edge_event.time)
                 tree.add_edge(edge_event.src+"_"+str(pre_time),edge_event.tar+"_"+str(edge_event.time),pre_time=pre_time,time=edge_event.time)
                 pre_time=edge_event.time
-        
+
         """
         compute Reingold-Tilford layout using igraph
         1. convert networkx graph to igraph graph
@@ -217,11 +218,56 @@ class Layout:
 
         return tree,self.time_list
 
-    def update_backward_event(self,graph):
+    def update_backward_event(self,graph,time_axis_list):
         """
         udpate backward attr of vertex, edge event in graph
         """
         match self.config["layout_type"]:
+            case "base":
+                for key,value in self.gamma_dict.items():
+                    FP_edge_event_list=value[0]
+                    if key==self.config["backward_id"]:
+                        for idx in range(len(time_axis_list)-1):
+                            for edge_event in FP_edge_event_list:
+                                if time_axis_list[idx]<edge_event.time and edge_event.time<=time_axis_list[idx+1]:
+                                    graph.nodes[edge_event.src+"_"+str(time_axis_list[idx])]["backward"]=True
+                                    graph.nodes[edge_event.tar+"_"+str(time_axis_list[idx+1])]["backward"]=True
+                                    graph.edges[(edge_event.src+"_"+str(time_axis_list[idx]),edge_event.tar+"_"+str(time_axis_list[idx+1]))]["backward"]=True
+
+            case "tpvis_aggr":
+                for key,value in self.gamma_dict.items():
+                    FP_edge_event_list=value[0]
+                    tau=self.config["start_time"]
+                    pre_id=self.config["source_id"]
+                    delta=self.config["time_interval"]
+                    if key==self.config["backward_id"]:
+                        for idx in range(len(FP_edge_event_list)):
+                            edge_event=FP_edge_event_list[idx]
+                            while edge_event.time-tau>delta:
+                                # tree.add_node(edge_event.src+"_"+str(tau+delta),vertex_id=edge_event.src,time=tau+delta)
+                                # tree.add_edge(edge_event.src+"_"+str(tau),edge_event.src+"_"+str(tau+delta),time=tau+delta,pre_time=tau)
+                                graph.nodes[edge_event.src+"_"+str(tau)]["backward"]=True
+                                graph.nodes[edge_event.src+"_"+str(tau+delta)]["backward"]=True
+                                graph.edges[(edge_event.src+"_"+str(tau),edge_event.src+"_"+str(tau+delta))]["backward"]=True
+                                tau=tau+delta
+                            if idx!=len(FP_edge_event_list)-1 and edge_event.time<tau+delta and FP_edge_event_list[idx+1].time<=tau+delta:
+                                continue
+
+                            if self.max_time<(tau+delta):
+                                # tree.add_node(edge_event.tar+"_"+str(self.max_time),vertex_id=edge_event.tar,time=self.max_time)
+                                # tree.add_edge(pre_id+"_"+str(tau),edge_event.tar+"_"+str(self.max_time),time=self.max_time,pre_time=tau)
+                                graph.nodes[pre_id+"_"+str(tau)]["backward"]=True
+                                graph.nodes[edge_event.tar+"_"+str(self.max_time)]["backward"]=True
+                                graph.edges[(pre_id+"_"+str(tau),edge_event.tar+"_"+str(self.max_time))]["backward"]=True
+                            else:
+                                # tree.add_node(edge_event.tar+"_"+str(tau+delta),vertex_id=edge_event.tar,time=tau+delta)
+                                # tree.add_edge(pre_id+"_"+str(tau),edge_event.tar+"_"+str(tau+delta),time=tau+delta,pre_time=tau)
+                                graph.nodes[pre_id+"_"+str(tau)]["backward"]=True
+                                graph.nodes[edge_event.tar+"_"+str(tau+delta)]["backward"]=True
+                                graph.edges[(pre_id+"_"+str(tau),edge_event.tar+"_"+str(tau+delta))]["backward"]=True
+                            pre_id=edge_event.tar
+                            tau=tau+delta
+
             case "tpvis":
                 for key,value in self.gamma_dict.items():
                     FP_edge_event_list=value[0]
@@ -233,6 +279,8 @@ class Layout:
                             graph.nodes[edge_event.tar+"_"+str(edge_event.time)]["backward"]=True
                             graph.edges[(edge_event.src+"_"+str(pre_time),edge_event.tar+"_"+str(edge_event.time))]["backward"]=True
                         pre_time=edge_event.time
+        
+        
         return graph
 
     def update_forward_event(self,graph):
@@ -286,7 +334,7 @@ class Layout:
             case "tpvis":
                 layout_graph,time_axis_list=self.compute_TPVis_layout()
                 layout_graph=self.update_forward_event(graph=layout_graph)
-        layout_graph=self.update_backward_event(graph=layout_graph)
+        layout_graph=self.update_backward_event(graph=layout_graph,time_axis_list=time_axis_list)
 
         vertex_event_list=[]
         edge_event_list=[]
