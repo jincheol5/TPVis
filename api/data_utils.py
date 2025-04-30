@@ -40,6 +40,17 @@ class Data_Utils:
             for edge_event in FP_edge_event_list:
                 time_set.add(edge_event.time)
             return min(time_set),max(time_set)
+        
+        @staticmethod
+        def find_highest_total_degree_vertex(graph:nx.DiGraph):
+            highest_total_degree_vertex=max(graph.degree,key=lambda x:x[1])
+            return highest_total_degree_vertex
+
+        @staticmethod
+        def find_last_visited_vertex(gamma_dict):
+            max_item=max(gamma_dict.items(),key=lambda x: x[1][1])
+            last_visited_vertex=max_item[1][0][-1].tar
+            return last_visited_vertex
 
     class Data_Process:
         @staticmethod
