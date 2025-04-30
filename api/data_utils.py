@@ -44,7 +44,7 @@ class Data_Utils:
         @staticmethod
         def find_highest_total_degree_vertex(graph:nx.DiGraph):
             highest_total_degree_vertex=max(graph.degree,key=lambda x:x[1])
-            return highest_total_degree_vertex
+            return highest_total_degree_vertex[0]
 
         @staticmethod
         def find_last_visited_vertex(gamma_dict):
