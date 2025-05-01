@@ -279,8 +279,6 @@ class Layout:
                             graph.nodes[edge_event.tar+"_"+str(edge_event.time)]["backward"]=True
                             graph.edges[(edge_event.src+"_"+str(pre_time),edge_event.tar+"_"+str(edge_event.time))]["backward"]=True
                         pre_time=edge_event.time
-        
-        
         return graph
 
     def update_forward_event(self,graph):

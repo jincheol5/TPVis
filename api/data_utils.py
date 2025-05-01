@@ -45,12 +45,41 @@ class Data_Utils:
         def find_highest_total_degree_vertex(graph:nx.DiGraph):
             highest_total_degree_vertex=max(graph.degree,key=lambda x:x[1])
             return highest_total_degree_vertex[0]
-
+        
         @staticmethod
         def find_last_visited_vertex(gamma_dict):
             max_item=max(gamma_dict.items(),key=lambda x: x[1][1])
             last_visited_vertex=max_item[1][0][-1].tar
             return last_visited_vertex
+        
+        @staticmethod
+        def count_visual_misalignment(gamma_dict,time_axis_list):
+            total_misalignment=0
+            for key,value in gamma_dict.items():
+                for idx in range(len(time_axis_list[:-1])):
+                    count=0
+                    for edge_event in value[0]:
+                        if time_axis_list[idx]<edge_event.time<=time_axis_list[idx+1]:
+                            count+=1
+                    if 1<count:
+                        total_misalignment=total_misalignment+count-1
+            return total_misalignment
+
+        @staticmethod
+        def count_visual_disconnection(gamma_dict,time_axis_list,source_id):
+            total_disconnection=0
+            time_gap=time_axis_list[1]-time_axis_list[0]
+            for key,value in gamma_dict.items():
+                pre_time=time_axis_list[0]
+                cur_time=time_axis_list[0]
+                for edge_event in value[0]:
+                    for idx in range(len(time_axis_list[:-1])):
+                        if time_axis_list[idx]<edge_event.time<=time_axis_list[idx+1]:
+                            pre_time=cur_time
+                            cur_time=time_axis_list[idx+1]
+                    if edge_event.src!=source_id and time_gap<(cur_time-pre_time):
+                        total_disconnection+=1
+            return total_disconnection
 
     class Data_Process:
         @staticmethod
