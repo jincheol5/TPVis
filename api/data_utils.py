@@ -49,7 +49,10 @@ class Data_Utils:
         @staticmethod
         def find_last_visited_vertex(gamma_dict):
             max_item=max(gamma_dict.items(),key=lambda x: x[1][1])
-            last_visited_vertex=max_item[1][0][-1].tar
+            if not max_item[1][0]:
+                last_visited_vertex=max_item[0]
+            else:
+                last_visited_vertex=max_item[1][0][-1].tar
             return last_visited_vertex
         
         @staticmethod

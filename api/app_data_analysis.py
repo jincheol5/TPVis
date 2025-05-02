@@ -8,8 +8,7 @@ def app_data(args):
             find_highest_total_degree_vertex()
             """
             df=Data_Utils.Data_Load.get_dataset_df(dataset_name=args.dataset_name)
-            gamma_dict,_=Data_Utils.Data_Process.compute_single_source_FP(source_id=args.source_id,start_time=args.start_time,end_time=args.end_time,df=df)
-            static_graph,_=Data_Utils.Data_Process.convert_gamma_to_static_graph_and_time_list(gamma_dict=gamma_dict,start_time=args.start_time)
+            static_graph=Data_Utils.Data_Process.get_networkx_graph_from_df(start_time=args.start_time,end_time=args.end_time,df=df)
             highest_total_degree_vertex=Data_Utils.Data_Analysis.find_highest_total_degree_vertex(graph=static_graph)
             print(f"highest total degree vertex: {highest_total_degree_vertex}")
 

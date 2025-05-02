@@ -61,14 +61,20 @@ export function visualize_layout(response_json){
             .attr("fill",color)
             .raise()
             .on("click",function(){
+                let color="red";
+                let text_x_pos=x_point+event.x_pos;
+                if (event.forward===true){
+                    color="blue";
+                    text_x_pos=x_point+event.x_pos-50;
+                }
                 const vertex=d3.select(this)
                     .attr("r",5)
-                    .attr("fill","red");
+                    .attr("fill",color);
                 display.append("text")
-                    .attr("x",x_point+event.x_pos-50)
-                    .attr("y",y_point+event.y_pos)
+                    .attr("x",text_x_pos)
+                    .attr("y",y_point+event.y_pos-25)
                     .style("font-size","20px")
-                    .style("fill","red")
+                    .style("fill",color)
                     .text(event.vertex_id);
                 vertex.raise();
             });
@@ -79,14 +85,22 @@ export function visualize_layout(response_json){
     const edge_event_list=response_json["edge_event_list"];
     for (const event of edge_event_list){
         let color=null;
+        let stroke_width=null;
+        let opacity=null;
         if (event.backward==true){
             color="red";
+            stroke_width=3;
+            opacity=1.0;
         }
         else if (event.forward==true){
             color="blue";
+            stroke_width=3;
+            opacity=1.0;
         }
         else{
             color="#5b5b5b";
+            stroke_width=1;
+            opacity=0.5;
         }
         display.append("line")
             .attr("id","edge_event_"+event.id)
@@ -98,7 +112,8 @@ export function visualize_layout(response_json){
             .attr("x2",parseFloat(document.getElementById("vertex_event_"+event.target_vertex_event_id).getAttribute("cx")))
             .attr("y2",parseFloat(document.getElementById("vertex_event_"+event.target_vertex_event_id).getAttribute("cy")))
             .attr("stroke",color)
-            .style("opacity",1.0);
+            .attr("stroke-width",stroke_width)
+            .style("opacity",opacity);
         
     }
 
@@ -121,7 +136,7 @@ export function visualize_TPVis_layout(response_json){
         }
         else if (event.forward==true){
             color="blue";
-            size=5;
+            size=3;
         }
         else{
             color="#5b5b5b";
@@ -137,15 +152,21 @@ export function visualize_TPVis_layout(response_json){
             .attr("fill",color)
             .raise()
             .on("click",function(){
+                let color="red";
+                let text_x_pos=x_point+event.x_pos;
+                if (event.forward===true){
+                    color="blue";
+                    text_x_pos=x_point+event.x_pos-50;
+                }
                 const vertex=d3.select(this)
                     .attr("r",5)
-                    .attr("fill","red");
+                    .attr("fill",color);
 
                 display.append("text")
-                    .attr("x",x_point+event.x_pos-50)
-                    .attr("y",y_point+event.y_pos)
+                    .attr("x",text_x_pos)
+                    .attr("y",y_point+event.y_pos-25)
                     .style("font-size","20px")
-                    .style("fill","red")
+                    .style("fill",color)
                     .text(event.vertex_id);
                 
                 // time_axis
@@ -175,15 +196,16 @@ export function visualize_TPVis_layout(response_json){
             });
             
             if (event.backward===true||event.forward===true){
-                display.append("text")
-                    .attr("x",x_point+event.x_pos-50)
-                    .attr("y",y_point+event.y_pos)
-                    .style("font-size","20px")
-                    .style("fill",color)
-                    .text(event.vertex_id);
+                // display.append("text")
+                //     .attr("x",x_point+event.x_pos-50)
+                //     .attr("y",y_point+event.y_pos)
+                //     .style("font-size","20px")
+                //     .style("fill",color)
+                //     .text(event.vertex_id);
                 
                 // time_axis
-                display.append("line")
+                if (event.forward!=true){
+                    display.append("line")
                     .attr("id","axis_"+event.time.toString())
                     .attr("time",event.time)
                     .attr("x1",x_point+event.x_pos)
@@ -192,18 +214,18 @@ export function visualize_TPVis_layout(response_json){
                     .attr("y2",y_point+1100.0)
                     .attr("stroke","green")
                     .attr("stroke-width",1);
-                
+                }
                 // time_axis_label
-                display.append("text")
-                    .attr("id","axis_label_"+event.time.toString())
-                    .attr("time",event.time)
-                    .attr("x",x_point+event.x_pos)
-                    .attr("y",y_point-50)
-                    .style("font-size","15px")
-                    .style("fill","green")
-                    .style("text-anchor","middle")
-                    .text(event.time.toString())
-                    .attr("transform","rotate(-45,"+String(x_point+event.x_pos)+","+String(y_point-50)+")");
+                // display.append("text")
+                //     .attr("id","axis_label_"+event.time.toString())
+                //     .attr("time",event.time)
+                //     .attr("x",x_point+event.x_pos)
+                //     .attr("y",y_point-50)
+                //     .style("font-size","15px")
+                //     .style("fill","green")
+                //     .style("text-anchor","middle")
+                //     .text(event.time.toString())
+                //     .attr("transform","rotate(-45,"+String(x_point+event.x_pos)+","+String(y_point-50)+")");
             }
     }
 
@@ -211,14 +233,22 @@ export function visualize_TPVis_layout(response_json){
     const edge_event_list=response_json["edge_event_list"];
     for (const event of edge_event_list){
         let color=null;
+        let stroke_width=null;
+        let opacity=null;
         if (event.backward==true){
             color="red";
+            stroke_width=3;
+            opacity=1.0;
         }
         else if (event.forward==true){
             color="blue";
+            stroke_width=1;
+            opacity=0.5;
         }
         else{
             color="#5b5b5b";
+            stroke_width=1;
+            opacity=0.5;
         }
         display.append("line")
             .attr("id","edge_event_"+event.id)
@@ -230,6 +260,7 @@ export function visualize_TPVis_layout(response_json){
             .attr("x2",parseFloat(document.getElementById("vertex_event_"+event.target_vertex_event_id).getAttribute("cx")))
             .attr("y2",parseFloat(document.getElementById("vertex_event_"+event.target_vertex_event_id).getAttribute("cy")))
             .attr("stroke",color)
-            .style("opacity",1.0);
+            .attr("stroke-width",stroke_width)
+            .style("opacity",opacity);
 }
 }
