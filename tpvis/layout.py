@@ -12,32 +12,34 @@ class Layout:
         layout_height
     """
     @staticmethod
-    def compute_time_axis_list_and_pos(config:dict):
+    def compute_time_axis_list_and_pos(path_tree:nx.DiGraph,config:dict):
         """
-        start, end axis 없엘지 말지 고민
+        len(time_axis_list)==1 인 경우 오류 
         """
         start_time=config['start_time']
         end_time=config['end_time']
-        time_interval=config['time_interval']
         layout_width=config['layout_width']
 
         time_axis_list=[]
-        t=start_time
-        while t<end_time:
-            time_axis_list.append(t)
-            t+=time_interval
-        time_axis_list.append(end_time)
+        time_axis_pos={}
 
-        time_axis_pos={
-            'start_axis':0.0,
-            'end_axis':float(layout_width)
-        }
+        time_interval=config['time_interval']
+        if time_interval==0.0:
+            time_axis_list=[path_tree.nodes[node]['time'] for node in path_tree.nodes()]
+            time_axis_list=sorted(set(time_axis_list)) # 중복 제거
+            x_pos_gap=float(layout_width/(len(time_axis_list)-1))
+            for i,time_axis in enumerate(time_axis_list):
+                time_axis_pos[time_axis]=i*x_pos_gap
+        else:
+            t=start_time
+            while t<end_time:
+                time_axis_list.append(t)
+                t+=time_interval
+            time_axis_list.append(end_time)
 
-        step=layout_width/(len(time_axis_list)+1)
-        for i,time_axis in enumerate(time_axis_list,start=1):
-            time_axis_pos[time_axis]=i*step
-        time_axis_list.insert(0,'start_axis')
-        time_axis_list.append('end_axis')
+            x_pos_gap=float(layout_width/(len(time_axis_list)-1))
+            for i,time_axis in enumerate(time_axis_list):
+                time_axis_pos[time_axis]=i*x_pos_gap
         return time_axis_list,time_axis_pos
 
     @staticmethod
@@ -48,7 +50,7 @@ class Layout:
         """
 
     @staticmethod
-    def compute_tpvis_layout(path_tree:nx.DiGraph,config:dict):
+    def compute_tpvis_layout(path_tree:nx.DiGraph,time_axis_pos:dict,config:dict):
         """
         << paper >>
         TPVis: A Temporal Path Visualization System for Intuitive Understanding of Information Diffusion Inside Temporal Networks (2025)
@@ -65,20 +67,17 @@ class Layout:
         layout=path_tree_ig.layout_reingold_tilford(root=[config['source_id']])
         pos={nx_nodes[i]:(layout[i][1],-layout[i][0]) for i in range(len(nx_nodes))}
 
-        ### scaling x, y position and update node attr 
-        xs=[p[0] for p in pos.values()]
+        ### scaling y position and update node attr 
         ys=[p[1] for p in pos.values()]
-        min_x,max_x=min(xs),max(xs)
         min_y,max_y=min(ys),max(ys)
-        x_range=max_x-min_x if max_x>min_x else 1.0
         y_range=max_y-min_y if max_y>min_y else 1.0
         
         for node,(x,y) in pos.items():
-            x_scaled=(x-min_x)/x_range*config["layout_width"]
+            # set y position
             y_scaled=(y-min_y)/y_range*config["layout_height"]
-            path_tree.nodes[node]["x"]=float(x_scaled)
-            path_tree.nodes[node]["y"]=float(y_scaled)
+            path_tree.nodes[node]['y']=float(y_scaled)
+            # set x position (mapping x position to correct time_axis pos)
+            valid_time=path_tree.nodes[node]['time']
+            path_tree.nodes[node]['x']=time_axis_pos[valid_time]
 
-        ### mapping x position to correct time_axis pos
-        # 구현 필요
         return path_tree
