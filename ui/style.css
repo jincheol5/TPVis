@@ -1,0 +1,63 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#app {
+    display: flex;
+    height: 100vh;
+}
+
+/* 사이드바 */
+#sidebar {
+    width: 260px;
+    background: #202123;
+    color: white;
+    padding: 16px;
+    transition: width 0.25s;
+}
+
+#sidebar.closed {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* 🔥 메인: 반드시 column flex */
+#main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #f7f7f8;
+}
+
+/* 상단 */
+#main-header {
+    height: 48px;
+    background: #10a37f;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+}
+
+/* 메인 콘텐츠 */
+#main-content {
+    flex: 1;              /* ← 이게 핵심 */
+    padding: 24px;
+    overflow: auto;
+}
+
+/* 🔥 하단 패널 */
+#bottom-panel {
+    height: 180px;
+    background: #e5e7eb;
+    padding: 12px;
+    transition: height 0.25s;
+    overflow: hidden;
+}
+
+#bottom-panel.closed {
+    height: 0;
+    padding: 0 12px;
+}
