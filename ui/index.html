@@ -1,35 +1,33 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <title>ChatGPT Style Sidebar</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <title>TPVis</title>
+    <!-- Semantic UI -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <!-- my css -->
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <div id="app">
-        <aside id="sidebar">
-            <h3>Sidebar</h3>
-            <p>메뉴 1</p>
-            <p>메뉴 2</p>
-        </aside>
-
-        <main id="main">
-            <div id="main-header">
-            <button id="toggle-sidebar">☰</button>
-            <button id="toggle-bottom">▴</button>
+    <div class="container">
+        <div class="control_view">
+            <div class="box">Control view</div>
+        </div>
+        <div class="main_area">
+            <div class="visualization_view">
+                <div class="box">Visualization view</div>
             </div>
-
-            <div id="main-content">
-            <h1>Main Content</h1>
-            <p>여기가 ChatGPT 메인 화면 같은 영역</p>
+            <div class="information_view">
+                <div class="box">Information view</div>
             </div>
-
-            <div id="bottom-panel">
-            하단 정보 패널
-            </div>
-        </main>
+        </div>
     </div>
-
+    <!-- Semantic UI -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- my js -->
     <script src="script.js"></script>
 </body>
 </html>
