@@ -30,33 +30,17 @@ class GraphTransformEngine:
             for idx,(src,tar,t) in enumerate(path):
                 while time_interval<t-tau:
                     path_tree.add_node(f"{src}_{tau+time_interval}",node_id=src,time=tau+time_interval)
-                    path_tree.add_edge(f"{src}_{tau}",f"{src}_{tau+time_interval}",time=tau+time_interval,pre_time=tau)
+                    path_tree.add_edge(f"{src}_{tau}",f"{src}_{tau+time_interval}",time=tau+time_interval)
                     tau=tau+time_interval
                 if idx!=len(path)-1 and t<tau+time_interval and path[idx+1][2]<=tau+time_interval:
                     continue
 
                 if max_t<(tau+time_interval):
                     path_tree.add_node(f"{tar}_{max_t}",node_id=tar,time=max_t)
-                    path_tree.add_edge(f"{pre_id}_{tau}",f"{tar}_{max_t}",time=max_t,pre_time=tau)
+                    path_tree.add_edge(f"{pre_id}_{tau}",f"{tar}_{max_t}",time=max_t)
                 else:
                     path_tree.add_node(f"{tar}_{tau+time_interval}",node_id=tar,time=tau+time_interval)
-                    path_tree.add_edge(f"{pre_id}_{tau}",f"{tar}_{tau+time_interval}",time=tau+time_interval,pre_time=tau)
+                    path_tree.add_edge(f"{pre_id}_{tau}",f"{tar}_{tau+time_interval}",time=tau+time_interval)
                 pre_id=tar
                 tau=tau+time_interval
         return path_tree
-
-
-
-    # def transform_to_path_tree_old(self):
-    #     graph=GraphUtils.convert_eventstream_to_graph(event_stream=self.eventstream)
-    #     gamma_dict=GraphAlgorithm.compute_TR_parallel(graph=graph,source_id=self.source_id)
-
-    #     path_tree=nx.DiGraph()
-    #     for target_node,(r,visited_t,p,p_visited_t) in gamma_dict.items():
-    #         if r==1:
-    #             src_id=f"{p}_{p_visited_t}"
-    #             tar_id=f"{target_node}_{visited_t}"
-    #             path_tree.add_node(src_id,time=visited_t)
-    #             path_tree.add_node(tar_id,time=p_visited_t)
-    #             path_tree.add_edge(src_id,tar_id)
-    #     return path_tree

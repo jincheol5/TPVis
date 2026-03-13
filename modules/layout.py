@@ -52,22 +52,8 @@ class Layout:
                 time_axis_pos[time_axis]=i*x_pos_gap
         return time_axis_list,time_axis_pos
 
-    def compute_linearized_bipartite_layout(self,layout_config:dict):
-        """
-        << paper >> 
-        Parallel Edge Splatting for Scalable Dynamic Graph Visualization (2011)
-        """
-
     def compute_tpvis_layout(self,time_axis_pos:dict,layout_config:dict):
         """
-        << paper >>
-        TPVis: A Temporal Path Visualization System for Intuitive Understanding of Information Diffusion Inside Temporal Networks (2025)
-        
-        Input:
-            path_tree
-            config
-        Output:
-            updated path_tree
         """
         ### initialize node position
         self.initialize_node_pos()
@@ -82,7 +68,7 @@ class Layout:
         ys=[p[1] for p in pos.values()]
         min_y,max_y=min(ys),max(ys)
         y_range=max_y-min_y if max_y>min_y else 1.0
-        
+
         ### set updated x, y position
         for node,(x,y) in pos.items():
             # set y position
