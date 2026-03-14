@@ -10,16 +10,76 @@
 </head>
 <body>
     <div class="container">
-        <div class="control_view">
-            <div class="box">Control view</div>
+        <div class="sidebar">
+            <div class="logo">
+                <h2>TPVis</h2>
+            </div>
+            <div class="section">
+                <h4>Dataset</h4>
+                <div class="ui form">
+                    <div class="field">
+                        <select class="ui dropdown">
+                            <option value="" selected disabled>Select Dataset</option>
+                            <option value="foremost">CollegeMsg</option>
+                            <option value="shortest">Bitcoin</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label class="ui button">
+                            <i class="upload icon"></i>
+                            Upload
+                            <input type="file" hidden>
+                        </label>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="section">
+                <h4>Temporal Path</h4>
+                <div class="ui form">
+                    <select class="ui dropdown">
+                        <option value="" selected disabled>Select TP</option>
+                        <option value="foremost">Foremost Path</option>
+                        <option value="shortest">Shortest Path</option>
+                    </select>
+                </div>
+            </div>
+            <div class="section">
+                <h4>Time Range</h4>
+                <div class="ui form">
+                    <div class="field">
+                        <input type="text" placeholder="Start Time">
+                    </div>
+                    <div class="field">
+                        <input type="text" placeholder="End Time">
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <h4>Time Interval</h4>
+                <div class="ui form">
+                    <div class="ui input">
+                        <input type="text" placeholder="Time Interval">
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <h4>Source ID</h4>
+                <div class="ui form">
+                    <div class="ui input">
+                        <input type="text" placeholder="Source ID">
+                    </div>
+                </div>
+            </div>
+            <div class="visualize">
+                <div class="ui form">
+                    <button class="ui button">
+                        Visualize
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="main_area">
-            <div class="visualization_view">
-                <div class="box">Visualization view</div>
-            </div>
-            <div class="information_view">
-                <div class="box">Information view</div>
-            </div>
+        <div class="content">
         </div>
     </div>
     <!-- Semantic UI -->
