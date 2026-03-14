@@ -27,6 +27,57 @@ class GraphUtils:
         t_max=max(t for _,_,t in eventstream)
         return t_min,t_max
 
+    @staticmethod
+    def _convert_node_event_to_dict(node_id:str,time:int,x_pos:float,y_pos:float):
+        event_dic={}
+        event_dic["id"]=f"{node_id}_{time}"
+        event_dic["node_id"]=node_id
+        event_dic["time"]=time
+        event_dic["x_pos"]=x_pos
+        event_dic["y_pos"]=y_pos
+        return event_dic
+    
+    def _convert_edge_event_to_dict(self,source_id:str,target_id:str):
+        """
+        source_id: source node event id
+        target_id: target node event id
+        """
+        event_dic={}
+        event_dic["id"]=f"{source_id}_{target_id}"
+        event_dic["source_id"]=source_id
+        event_dic["target_id"]=target_id
+        return event_dic
+
+    @staticmethod
+    def convert_to_response_dict(path_tree:nx.DiGraph,time_axis_list:list,time_axis_pos:dict):
+        node_event_list=[]
+        edge_event_list=[]
+
+        for _,attr in path_tree.nodes(data=True):
+            node_event_list.append(
+                GraphUtils._convert_node_event_to_dict(
+                    node_id=attr.get("node_id"),
+                    time=attr.get("time"),
+                    x_pos=attr.get("x_pos"),
+                    y_pos=attr.get("y_pos")
+                )
+            )
+        
+        for u,v,attr in path_tree.edges(data=True):
+            edge_event_list.append(
+                GraphUtils._convert_edge_event_to_dict(
+                    source_id=u,
+                    target_id=v,
+                )
+            )
+
+        response_dict={}
+        response_dict["time_axis_list"]=time_axis_list
+        response_dict["time_axis_pos"]=time_axis_pos
+        response_dict["node_event_list"]=node_event_list
+        response_dict["edge_event_list"]=edge_event_list
+        return response_dict
+
 class GraphAlgorithm:
     @staticmethod
     def _initialize_node_attr(graph:nx.DiGraph,source_id:int=0):

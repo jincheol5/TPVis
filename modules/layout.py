@@ -1,9 +1,25 @@
 import networkx as nx
 import igraph as ig
+from pydantic import BaseModel
+from enum import Enum
+
+class PathType(str,Enum):
+    foremost="foremost"
+    shortest="shortest"
+
+class LayoutConfig(BaseModel):
+    dataset_name: str
+    path_type: PathType
+    source_id: int
+    start_time: int
+    end_time: int
+    time_interval: int
+    layout_width: float
+    layout_height: float
 
 class Layout:
     """
-    layout_configg
+    layout_config
         source_id
         start_time
         end_time

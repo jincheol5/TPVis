@@ -17,7 +17,13 @@
 /* 오른쪽 페이지 */
 .content{
     flex:1; /* 남은 공간 모두 차지 */ 
-    padding:30px;
+
+    display:flex;
+    flex-direction:column;   /* 위 → 아래 배치 */
+    justify-content:center;   /* 좌우 가운데 */
+    align-items:center;       /* 상하 가운데 */
+
+    padding:0px;
     background:#f9f9f9;
     overflow-y:auto; /* content 내에서 세로 내용이 넘치면 자동으로 스크롤 생성 */
 }

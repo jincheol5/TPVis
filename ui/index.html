@@ -10,6 +10,7 @@
 </head>
 <body>
     <div class="container">
+        <!-- 사이드바 -->
         <div class="sidebar">
             <div class="logo">
                 <h2>TPVis</h2>
@@ -18,14 +19,14 @@
                 <h4>Dataset</h4>
                 <div class="ui form">
                     <div class="field">
-                        <select class="ui dropdown">
+                        <select class="ui dropdown" style="width:70%">
                             <option value="" selected disabled>Select Dataset</option>
                             <option value="foremost">CollegeMsg</option>
                             <option value="shortest">Bitcoin</option>
                         </select>
                     </div>
                     <div class="field">
-                        <label class="ui button">
+                        <label class="ui button" style="width:70%">
                             <i class="upload icon"></i>
                             Upload
                             <input type="file" hidden>
@@ -37,7 +38,7 @@
             <div class="section">
                 <h4>Temporal Path</h4>
                 <div class="ui form">
-                    <select class="ui dropdown">
+                    <select class="ui dropdown" style="width:70%">
                         <option value="" selected disabled>Select TP</option>
                         <option value="foremost">Foremost Path</option>
                         <option value="shortest">Shortest Path</option>
@@ -48,38 +49,47 @@
                 <h4>Time Range</h4>
                 <div class="ui form">
                     <div class="field">
-                        <input type="text" placeholder="Start Time">
+                        <input type="text" placeholder="Start Time" style="width:70%">
                     </div>
                     <div class="field">
-                        <input type="text" placeholder="End Time">
+                        <input type="text" placeholder="End Time" style="width:70%">
                     </div>
                 </div>
             </div>
             <div class="section">
                 <h4>Time Interval</h4>
                 <div class="ui form">
-                    <div class="ui input">
-                        <input type="text" placeholder="Time Interval">
+                    <div class="field">
+                        <div class="ui input" style="width:70%">
+                            <input type="text" placeholder="Time Interval">
+                        </div>
                     </div>
+                    
                 </div>
             </div>
             <div class="section">
                 <h4>Source ID</h4>
                 <div class="ui form">
-                    <div class="ui input">
-                        <input type="text" placeholder="Source ID">
+                    <div class="field">
+                        <div class="ui input" style="width:70%">
+                            <input type="text" placeholder="Source ID">
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="visualize">
                 <div class="ui form">
-                    <button class="ui button">
+                    <button class="ui button" style="width:50%">
                         Visualize
                     </button>
                 </div>
             </div>
         </div>
+
+        <!-- 시각화 창 -->
         <div class="content">
+            <svg id="timeline" width="90%" height="15%"></svg>
+            <svg id="display" width="90%" height="75%"></svg>
         </div>
     </div>
     <!-- Semantic UI -->
