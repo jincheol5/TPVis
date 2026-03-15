@@ -1,22 +1,101 @@
-export function visualize_display(response_json){
+export function visualize_timeline(response_json,layout_width,timeline_height){
+    const timeline=d3.select("#timeline");
+    timeline.selectAll("*").remove();
+
+    const time_axis_list=response_json["time_axis_list"];
+    const time_axis_pos=response_json["time_axis_pos"];
+
+    const axis_y=timeline_height*0.7;   // timeline 내부에서 y 위치
+
+    // 가로 axis
+    timeline.append("line")
+        .attr("x1",0)
+        .attr("y1",axis_y)
+        .attr("x2",layout_width)
+        .attr("y2",axis_y)
+        .attr("stroke","black")
+        .attr("stroke-width",2);
+
+    // tick + label
+    const formatYear=d3.timeFormat("%Y");
+    const formatDate=d3.timeFormat("%m-%d");
+    const formatTime=d3.timeFormat("%H:%M");
+    for(const time of time_axis_list){
+        const x=time_axis_pos[time];
+        const date=new Date(time*1000);
+        
+        // year
+        timeline.append("text")
+            .attr("x",x)
+            .attr("y",axis_y-50)
+            .attr("text-anchor","middle")
+            .attr("font-size",10)
+            .attr("fill","#555")
+            .text(formatYear(date));
+
+        // date
+        timeline.append("text")
+            .attr("x",x)
+            .attr("y",axis_y-36)
+            .attr("text-anchor","middle")
+            .attr("font-size",10)
+            .attr("fill","#555")
+            .text(formatDate(date));
+
+        // time
+        timeline.append("text")
+            .attr("x",x)
+            .attr("y",axis_y-22)
+            .attr("text-anchor","middle")
+            .attr("font-size",10)
+            .attr("fill","#555")
+            .text(formatTime(date));
+
+        // tick
+        timeline.append("line")
+            .attr("x1",x)
+            .attr("y1",axis_y)
+            .attr("x2",x)
+            .attr("y2",axis_y-8)
+            .attr("stroke","black")
+            .attr("stroke-width",2);
+    }
+}
+
+
+export function visualize_display(response_json,layout_height){
     // get display svg
     const display=d3.select("#display");
-
-    // 기존 시각화 삭제
     display.selectAll("*").remove();
 
+    // tooltip (메시지 박스)
+    let tooltip=d3.select("body").select("#node-tooltip");
+    if (tooltip.empty()){
+        tooltip = d3.select("body")
+            .append("div")
+            .attr("id","node-tooltip")
+            .style("position","absolute")
+            .style("background","white")
+            .style("border","1px solid gray")
+            .style("padding","4px 8px")
+            .style("font-size","12px")
+            .style("pointer-events","none")
+            .style("display","none");
+    }
+
     // visualize time_axis
-    const layout_height=display.node().getBoundingClientRect().height;
     const time_axis_list=response_json["time_axis_list"];
     const time_axis_pos=response_json["time_axis_pos"];
 
     for (const time of time_axis_list){
+        const x=time_axis_pos[time];
+
         display.append("line")
-            .attr("id","axis_"+time.toString())
+            .attr("id","axis_"+time)
             .attr("time",time)
-            .attr("x1",time_axis_pos[time])
+            .attr("x1",x)
             .attr("y1",0)
-            .attr("x2",time_axis_pos[time])
+            .attr("x2",x)
             .attr("y2",layout_height)
             .attr("stroke","gray")
             .attr("stroke-dasharray","5,5")
@@ -27,35 +106,74 @@ export function visualize_display(response_json){
     const node_event_list=response_json["node_event_list"];
     const node_pos_map={};
     for (const event of node_event_list){
-        node_pos_map[event.id]={
-            x: event.x_pos,
-            y: event.y_pos
-        }
+        const x=event.x_pos;
+        const y=event.y_pos;
+
+        node_pos_map[event.id]={x,y};
 
         display.append("circle")
             .attr("id","node_event_"+event.id)
-            .attr("cx",event.x_pos)
-            .attr("cy",event.y_pos)
+            .attr("cx",x)
+            .attr("cy",y)
             .attr("r",3)
+            .attr("fill","black")
+            .on("click",function(){
+                const node=d3.select(this);
+                const node_id=event.node_id;
+                const tooltip_id="tooltip_"+node_id;
+                const existing_tooltip=d3.select("#"+tooltip_id);
+
+                // 이미 선택된 상태 → 원상복구
+                if(node.classed("selected")){
+                    node
+                        .classed("selected",false)
+                        .attr("r",3)
+                        .attr("fill","black");
+                    existing_tooltip.remove();
+                    return;
+                }
+                // 선택 상태
+                node
+                    .classed("selected",true)
+                    .attr("r",5)
+                    .attr("fill","red")
+                    .raise();
+
+                // node 위치
+                const cx=+node.attr("cx");
+                const cy=+node.attr("cy");
+
+                // svg 위치
+                const svgRect=display.node().getBoundingClientRect();
+
+                // tooltip 생성
+                d3.select("body")
+                    .append("div")
+                    .attr("id", tooltip_id)
+                    .style("position","absolute")
+                    .style("background","white")
+                    .style("border","1px solid gray")
+                    .style("padding","3px 6px")
+                    .style("font-size","12px")
+                    .style("pointer-events","none")
+                    .style("left",(svgRect.left+cx-30)+"px")
+                    .style("top",(svgRect.top+cy-50)+"px")
+                    .text("node_id: "+node_id);
+            });
     }
 
     // visualize edge event
     const edge_event_list=response_json["edge_event_list"];
-    const color="black";
-    const stroke_width=1;
-    const opacity=0.5;
     for (const event of edge_event_list){
-        const source=node_pos_map[event.source_id]
-        const target=node_pos_map[event.target_id]
+        const source=node_pos_map[event.source_id];
+        const target=node_pos_map[event.target_id];
         display.append("line")
             .attr("x1",source.x)
             .attr("y1",source.y)
             .attr("x2",target.x)
             .attr("y2",target.y)
             .attr("stroke","black")
-            .attr("stroke-width",stroke_width)
-            .style("opacity",opacity);
-            
+            .attr("stroke-width",1)
+            .style("opacity",0.5);
     }
-
 }

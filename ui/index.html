@@ -87,8 +87,10 @@
 
         <!-- 시각화 창 -->
         <div class="content">
-            <svg id="timeline" width="90%" height="15%"></svg>
-            <svg id="display" width="90%" height="75%"></svg>
+            <svg id="background" width="100%" height="100%">
+                <g id="timeline"></g>
+                <g id="display"></g>
+            </svg>
         </div>
     </div>
     <!-- Semantic UI -->
@@ -97,6 +99,6 @@
     <!-- D3.js -->
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <!-- my js -->
-    <script type="module" src="script.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>

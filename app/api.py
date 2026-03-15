@@ -61,11 +61,6 @@ def compute_layout(layout_config:LayoutConfig):
         time_axis_list=time_axis_list,
         time_axis_pos=time_axis_pos
     )
-
-    print(response_dict["node_event_list"])
-    print(response_dict["edge_event_list"])
-
-
     return response_dict
 
 if __name__ == "__main__":
