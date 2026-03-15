@@ -19,7 +19,7 @@
                 <h4>Dataset</h4>
                 <div class="ui form">
                     <div class="field">
-                        <select class="ui dropdown" style="width:70%">
+                        <select class="ui dropdown" id="dataset_name" style="width:70%">
                             <option value="" selected disabled>Select Dataset</option>
                             <option value="foremost">CollegeMsg</option>
                             <option value="shortest">Bitcoin</option>
@@ -38,7 +38,7 @@
             <div class="section">
                 <h4>Temporal Path</h4>
                 <div class="ui form">
-                    <select class="ui dropdown" style="width:70%">
+                    <select class="ui dropdown" id="path_type" style="width:70%">
                         <option value="" selected disabled>Select TP</option>
                         <option value="foremost">Foremost Path</option>
                         <option value="shortest">Shortest Path</option>
@@ -49,10 +49,10 @@
                 <h4>Time Range</h4>
                 <div class="ui form">
                     <div class="field">
-                        <input type="text" placeholder="Start Time" style="width:70%">
+                        <input id="start_time" type="text" placeholder="Start Time" style="width:70%">
                     </div>
                     <div class="field">
-                        <input type="text" placeholder="End Time" style="width:70%">
+                        <input id="end_time" type="text" placeholder="End Time" style="width:70%">
                     </div>
                 </div>
             </div>
@@ -61,10 +61,9 @@
                 <div class="ui form">
                     <div class="field">
                         <div class="ui input" style="width:70%">
-                            <input type="text" placeholder="Time Interval">
+                            <input id="time_interval" type="text" placeholder="Time Interval">
                         </div>
                     </div>
-                    
                 </div>
             </div>
             <div class="section">
@@ -72,14 +71,14 @@
                 <div class="ui form">
                     <div class="field">
                         <div class="ui input" style="width:70%">
-                            <input type="text" placeholder="Source ID">
+                            <input id="source_id" type="text" placeholder="Source ID">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="visualize">
                 <div class="ui form">
-                    <button class="ui button" style="width:50%">
+                    <button class="ui button" id="visualize" style="width:50%">
                         Visualize
                     </button>
                 </div>
@@ -98,6 +97,6 @@
     <!-- D3.js -->
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <!-- my js -->
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

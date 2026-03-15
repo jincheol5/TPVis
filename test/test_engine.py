@@ -19,12 +19,9 @@ def main(test_config:dict):
                 (3,4,8),
                 (2,5,9)
             ]
-            graph=GraphUtils.convert_eventstream_to_graph(eventstream=eventstream)
             graph_engine=GraphTransformEngine(eventstream=eventstream)
-            path_tree=graph_engine.transform_to_aggregated_path_tree(source_id=0,start_time=0,end_time=10,time_interval=2)
+            path_tree=graph_engine.transform_to_aggregated_path_tree(source_id=0,start_time=1,end_time=9,time_interval=2)
             print(path_tree.nodes())
-
-
 
 
 if __name__=="__main__":

@@ -1,4 +1,5 @@
 import networkx as nx
+from .layout import LayoutConfig
 
 class GraphUtils:
     @staticmethod
@@ -28,6 +29,23 @@ class GraphUtils:
         return t_min,t_max
 
     @staticmethod
+    def check_layout_config_time_range(eventstream:list,layout_config:LayoutConfig|dict):
+        """
+        """
+        min_time,max_time=GraphUtils.get_min_max_time_in_eventstream(eventstream=eventstream)
+        if isinstance(layout_config,LayoutConfig):
+            if layout_config.start_time<min_time:
+                layout_config.start_time=min_time
+            if max_time<layout_config.end_time:
+                layout_config.end_time=max_time
+        elif isinstance(layout_config,dict):
+            if layout_config["start_time"]<min_time:
+                layout_config["start_time"]=min_time
+            if max_time<layout_config["end_time"]:
+                layout_config["end_time"]=max_time
+        return layout_config
+
+    @staticmethod
     def _convert_node_event_to_dict(node_id:str,time:int,x_pos:float,y_pos:float):
         event_dic={}
         event_dic["id"]=f"{node_id}_{time}"
@@ -37,7 +55,8 @@ class GraphUtils:
         event_dic["y_pos"]=y_pos
         return event_dic
     
-    def _convert_edge_event_to_dict(self,source_id:str,target_id:str):
+    @staticmethod
+    def _convert_edge_event_to_dict(source_id:str,target_id:str):
         """
         source_id: source node event id
         target_id: target node event id
