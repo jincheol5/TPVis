@@ -27,7 +27,7 @@ def main(test_config:dict):
             
             min_time,max_time=GraphUtils.get_min_max_time_in_eventstream(eventstream=eventstream)
             print(f"{test_config['dataset_name']} min time: {min_time} max time: {max_time}")
-            print(f"{test_config['dataset_name']} min time: {datetime.fromtimestamp(min_time).strftime("%Y-%m-%d %H:%M")} max time: {datetime.fromtimestamp(max_time).strftime("%Y-%m-%d %H:%M")}")
+            print(f"{test_config['dataset_name']} min time: {datetime.fromtimestamp(min_time).strftime('%Y-%m-%d %H:%M')} max time: {datetime.fromtimestamp(max_time).strftime('%Y-%m-%d %H:%M')}")
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser()

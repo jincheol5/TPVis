@@ -75,9 +75,16 @@ class Layout:
         self.initialize_node_pos()
 
         ### compute Reingold-Tilford layout using igraph
-        path_tree_ig=ig.Graph.from_networkx(g=self.path_tree)
         nx_nodes=list(self.path_tree.nodes())
-        layout=path_tree_ig.layout_reingold_tilford(root=[layout_config['source_id']])
+        node_to_idx={node:i for i,node in enumerate(nx_nodes)}
+        path_tree_ig=ig.Graph.from_networkx(self.path_tree)
+        node_key=f"{layout_config['source_id']}_{layout_config['start_time']}"
+        root_idx=node_to_idx[node_key]
+        layout=path_tree_ig.layout_reingold_tilford(root=[root_idx])
+
+        # path_tree_ig=ig.Graph.from_networkx(g=self.path_tree)
+        # nx_nodes=list(self.path_tree.nodes())
+        # layout=path_tree_ig.layout_reingold_tilford(root=[layout_config['source_id']])
         pos={nx_nodes[i]:(layout[i][1],-layout[i][0]) for i in range(len(nx_nodes))}
 
         ### scaling y position and update node attr 
