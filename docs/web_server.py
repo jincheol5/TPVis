@@ -1,10 +1,9 @@
 import http.server
-from http.server import HTTPServer,BaseHTTPRequestHandler
 import socketserver
 
-PORT = 8080
+PORT=8080
 
-Handler = http.server.SimpleHTTPRequestHandler
+Handler=http.server.SimpleHTTPRequestHandler
 
 Handler.extensions_map={
     '.manifest': 'text/cache-manifest',
@@ -17,7 +16,9 @@ Handler.extensions_map={
     '': 'application/octet-stream',
 }
 
-httpd = socketserver.TCPServer(("", PORT), Handler)
-
-print("serving at port", PORT)
-httpd.serve_forever()
+try:
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print("serving at port", PORT)
+        httpd.serve_forever()
+except KeyboardInterrupt:
+    print("\nserver stopped")

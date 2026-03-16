@@ -67,6 +67,7 @@ export function visualize_display(response_json,layout_height){
     // get display svg
     const display=d3.select("#display");
     display.selectAll("*").remove();
+    d3.selectAll(".node-tooltip").remove();
 
     // tooltip (메시지 박스)
     let tooltip=d3.select("body").select("#node-tooltip");
@@ -74,6 +75,7 @@ export function visualize_display(response_json,layout_height){
         tooltip = d3.select("body")
             .append("div")
             .attr("id","node-tooltip")
+            .attr("class","node-tooltip")
             .style("position","absolute")
             .style("background","white")
             .style("border","1px solid gray")
@@ -149,7 +151,7 @@ export function visualize_display(response_json,layout_height){
                 // tooltip 생성
                 d3.select("body")
                     .append("div")
-                    .attr("id", tooltip_id)
+                    .attr("id",tooltip_id)
                     .style("position","absolute")
                     .style("background","white")
                     .style("border","1px solid gray")

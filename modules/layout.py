@@ -80,8 +80,6 @@ class Layout:
         layout=path_tree_ig.layout_reingold_tilford(root=[layout_config['source_id']])
         pos={nx_nodes[i]:(layout[i][1],-layout[i][0]) for i in range(len(nx_nodes))}
 
-        print(pos)
-
         ### scaling y position and update node attr 
         ys=[p[1] for p in pos.values()]
         min_y,max_y=min(ys),max(ys)
@@ -95,8 +93,5 @@ class Layout:
             # set x position (mapping x position to correct time_axis pos)
             valid_time=self.path_tree.nodes[node]['time']
             self.path_tree.nodes[node]['x_pos']=time_axis_pos[valid_time]
-        
-        for node, attrs in self.path_tree.nodes(data=True):
-            print(node, attrs)
 
         return self.path_tree
