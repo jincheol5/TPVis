@@ -1,6 +1,6 @@
 # TPVis
 Version: 1.0.0-alpha
-
+현재 리뉴얼 중입니다.
 
 # What is TPVis?
 TPVis는 동적 네트워크에서의 **시간적 정보 확산(temporal information diffusion)**을 직관적으로 분석할 수 있도록 지원하는 temporal path 시각화 시스템입니다.
@@ -13,6 +13,14 @@ TPVis는 이러한 문제를 해결하기 위해:
 - 이를 timeline 기반 레이아웃으로 시각화하여 시각적 혼란 요소들을 100% 제거합니다.
 
 # How to use?
+1. UI접속 및 TPVis engine 실행
+  - [UI](https://jincheol5.github.io/TPVis/)
+  - TPVis engine: `python -m app.run_tpvis_engine`
+
+2. 데이터셋 업로드
+
+3. 사용자 쿼리
+ 
 
 
 
