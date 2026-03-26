@@ -60,7 +60,7 @@ file_input_btn.addEventListener("change", async (e)=>{
         }
 
         const result=await res.json();
-        update_dataset_dropdown(result.datasets, result.saved_dataset);
+        update_dataset_dropdown(result.datasets_list);
 
     } catch (err) {
         console.error(err);
