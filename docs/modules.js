@@ -191,11 +191,6 @@ export function update_dataset_dropdown(dataset_list){
     default_option.value="";
     default_option.disabled=true;
     default_option.textContent="Select Dataset";
-
-    // 선택값 없으면 기본 선택
-    if (!selectedValue) {
-        default_option.selected=true;
-    }
     dataset_select.appendChild(default_option);
 
     // 3. datasets로 옵션 생성
@@ -207,5 +202,6 @@ export function update_dataset_dropdown(dataset_list){
     });
 
     // 4. Semantic UI dropdown 갱신
+    $("#dataset_select").dropdown("clear");
     $("#dataset_select").dropdown("refresh");
 }
