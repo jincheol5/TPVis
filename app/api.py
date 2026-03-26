@@ -1,7 +1,8 @@
+import os
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI,UploadFile,File
 from fastapi.middleware.cors import CORSMiddleware
-from modules import DataUtils,LayoutConfig,Layout,GraphUtils,GraphTransformEngine
+from modules import DataUtils,LayoutConfig,Layout,GraphUtils,GraphTransformEngine,DBInterface
 
 app=FastAPI()
 
@@ -12,6 +13,29 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.post("/upload_dataset")
+def upload_dataset(file:UploadFile=File(...)):
+    """
+    """
+    # get dataset_name
+    dataset_name=os.path.splitext(file.filename)[0] # 확장자 제거
+
+    # convert file to eventstream
+    eventstream=[]
+    for line in file.file: 
+        line=line.decode("utf-8").strip()
+        src,tar,t=line.split()
+        eventstream.append((int(src),int(tar),int(t)))
+
+    db_IF=DBInterface()
+    db_IF.upload_dataset(dataset_name=dataset_name,event_stream=eventstream)
+    dataset_list=db_IF.get_dataset_list()
+    db_IF.disconnect_db()
+
+    response_dict={}
+    response_dict["dataset_list"]=dataset_list
+    return response_dict
 
 @app.post("/compute_layout")
 def compute_layout(layout_config:LayoutConfig):

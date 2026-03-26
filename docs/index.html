@@ -19,18 +19,16 @@
                 <h4>Dataset</h4>
                 <div class="ui form">
                     <div class="field">
-                        <select class="ui dropdown" id="dataset_name" style="width:70%">
+                        <select class="ui dropdown" id="dataset_select" style="width:70%">
                             <option value="" selected disabled>Select Dataset</option>
-                            <option value="Simple">Simple</option>
                             <option value="CollegeMsg">CollegeMsg</option>
-                            <option value="Bitcoin">Bitcoin</option>
                         </select>
                     </div>
                     <div class="field">
                         <label class="ui button" style="width:70%">
                             <i class="upload icon"></i>
                             Upload
-                            <input type="file" hidden>
+                            <input type="file" id="file_input" hidden accept=".txt">
                         </label>
                     </div>
                 </div>

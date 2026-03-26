@@ -1,10 +1,9 @@
 import {visualize_timeline} from "./modules.js"
 import {visualize_display} from "./modules.js"
+import {update_dataset_dropdown} from "./modules.js"
 
-const btn=document.getElementById("visualize");
-
-btn.onclick=async function(){
-    
+const visualize_btn=document.getElementById("visualize");
+visualize_btn.onclick=async function(){
     const background=d3.select("#background")
     const width=background.node().getBoundingClientRect().width
     const height=background.node().getBoundingClientRect().height
@@ -41,3 +40,32 @@ btn.onclick=async function(){
     visualize_timeline(response_json,width-margin_x*2,timeline_height)
     visualize_display(response_json,height-margin_y*2-timeline_height)
 }
+
+const file_input_btn=document.getElementById("file_input");
+file_input_btn.addEventListener("change", async (e)=>{
+    try {
+        const file=e.target.files[0];
+        if (!file) return;
+
+        const formData=new FormData();
+        formData.append("file",file);
+
+        const res=await fetch("http://127.0.0.1:8000/upload_dataset", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!res.ok) {
+            throw new Error("데이터셋 업로드 실패");
+        }
+
+        const result=await res.json();
+        update_dataset_dropdown(result.datasets, result.saved_dataset);
+
+    } catch (err) {
+        console.error(err);
+        alert("데이터셋 업로드 중 오류가 발생했습니다.");
+    } finally {
+        file_input_btn.value="";
+    }
+});

@@ -179,3 +179,33 @@ export function visualize_display(response_json,layout_height){
             .style("opacity",0.5);
     }
 }
+
+export function update_dataset_dropdown(dataset_list){
+    const dataset_select=document.getElementById("dataset_select");
+
+    // 1. 기존 옵션 초기화
+    dataset_select.innerHTML="";
+
+    // 2. 기본 옵션 추가
+    const default_option=document.createElement("option");
+    default_option.value="";
+    default_option.disabled=true;
+    default_option.textContent="Select Dataset";
+
+    // 선택값 없으면 기본 선택
+    if (!selectedValue) {
+        default_option.selected=true;
+    }
+    dataset_select.appendChild(default_option);
+
+    // 3. datasets로 옵션 생성
+    dataset_list.forEach((name)=>{
+        const option=document.createElement("option");
+        option.value=name;
+        option.textContent=name;
+        dataset_select.appendChild(option);
+    });
+
+    // 4. Semantic UI dropdown 갱신
+    $("#dataset_name").dropdown("refresh");
+}
