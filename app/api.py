@@ -51,22 +51,10 @@ def compute_layout(layout_config:LayoutConfig):
         layout_height
     """
     dataset_name=layout_config.dataset_name
-    match dataset_name:
-        case "Simple":
-            eventstream=[
-                    (0,2,1),
-                    (0,2,2),
-                    (0,3,3),
-                    (1,7,4),
-                    (0,1,5),
-                    (1,6,6),
-                    (0,3,7),
-                    (3,6,7),
-                    (3,4,8),
-                    (2,5,9)
-                ]
-        case "Bitcoin":
-            eventstream=DataUtils.load_dataset_to_eventstream(dataset_name=dataset_name)
+    db_IF=DBInterface()
+    eventstream=db_IF.get_event_stream(dataset_name=dataset_name)
+    db_IF.disconnect_db()
+
     layout_config=GraphUtils.check_layout_config_time_range(eventstream=eventstream,layout_config=layout_config)
 
     graph_engine=GraphTransformEngine(eventstream=eventstream)
