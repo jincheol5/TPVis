@@ -16,6 +16,7 @@ class DBInterface:
         event_stream: list of tuple (src,tar,time)
         """
         db=self.client[dataset_name]
+        db.drop_collection("edge_event") # 기존 edge_event 컬렉션 삭제
         edge_event_collection=db["edge_event"]
 
         # edge events 저장
