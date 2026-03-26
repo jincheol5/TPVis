@@ -207,5 +207,5 @@ export function update_dataset_dropdown(dataset_list){
     });
 
     // 4. Semantic UI dropdown 갱신
-    $("#dataset_name").dropdown("refresh");
+    $("#dataset_select").dropdown("refresh");
 }

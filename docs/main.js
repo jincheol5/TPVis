@@ -18,7 +18,7 @@ visualize_btn.onclick=async function(){
     display.attr("transform",`translate(${margin_x},${margin_y+timeline_height})`)
 
     const request_json={
-        dataset_name: document.getElementById("dataset_name").value,
+        dataset_name: document.getElementById("dataset_select").value,
         path_type: document.getElementById("path_type").value,
         start_time: Number(document.getElementById("start_time").value),
         end_time: Number(document.getElementById("end_time").value),
