@@ -4,7 +4,7 @@ from pymongo.errors import PyMongoError
 class DBInterface:
     def __init__(self):
         try:
-            self.client=MongoClient("mongodb://localhost:27017/")
+            self.client=MongoClient("mongodb://127.0.0.1:27017/")
         except PyMongoError as e:
             print(f"MongoDB error: {e}")
     
@@ -15,9 +15,9 @@ class DBInterface:
         """
         event_stream: list of tuple (src,tar,time)
         """
-        db=self.client[dataset_name]
-        db.drop_collection("edge_event") # 기존 edge_event 컬렉션 삭제
-        edge_event_collection=db["edge_event"]
+        db=self.client["TPVis"]
+        db.drop_collection(dataset_name) # 기존 edge_event 컬렉션 삭제
+        dataset_collection=db[dataset_name]
 
         # edge events 저장
         unique_map={
@@ -30,10 +30,11 @@ class DBInterface:
             for src,tar,time in event_stream
         } # 중복 edge_event 제거
         edge_docs=list(unique_map.values())
-        edge_event_collection.insert_many(edge_docs,ordered=False) # ordered=False: 중복 _id 있으면 skip
+        dataset_collection.insert_many(edge_docs,ordered=False) # ordered=False: 중복 _id 있으면 skip
     
     def get_dataset_list(self):
-        dataset_list=self.client.list_database_names()
+        db=self.client["TPVis"]
+        dataset_list=db.list_collection_names()
         return dataset_list
 
     def get_event_stream(self,dataset_name:str):
