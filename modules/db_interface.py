@@ -19,15 +19,16 @@ class DBInterface:
         edge_event_collection=db["edge_event"]
 
         # edge events 저장
-        edge_docs=[
-            {
-                "_id":f"{src}_{tar}_{time}",
-                "src_id":src, 
-                "tar_id":tar, 
-                "time":time
+        unique_map={
+            f"{src}_{tar}_{time}": {
+                "_id": f"{src}_{tar}_{time}",
+                "src_id": src,
+                "tar_id": tar,
+                "time": time
             }
             for src,tar,time in event_stream
-        ]
+        } # 중복 edge_event 제거
+        edge_docs=list(unique_map.values())
         edge_event_collection.insert_many(edge_docs,ordered=False) # ordered=False: 중복 _id 있으면 skip
     
     def get_dataset_list(self):
